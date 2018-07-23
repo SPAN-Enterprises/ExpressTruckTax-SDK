@@ -1,0 +1,106 @@
+﻿@model apiclienttool.com.Models.Request.IRSVehicleCheckRequest
+@{
+    ViewBag.Title = "Verify the e-filing of Federal HVUT using this API";
+}
+
+<div class="col-md-12 col-lg-12">
+    @using (Html.BeginForm("", "", FormMethod.Post, new { id = "VINLookupForm" }))
+    {
+        <h1 class="pageTitle">Verify the e-filing of Federal HVUT using this API</h1>
+        <div class="panel-group" id="accordion">
+            <div class="panel panel-default">
+                <div class="panel-heading" data-toggle="collapse">
+                    <h4 style="margin-top: 0px;margin-bottom: 0px">
+                        IRS Vehicle Check
+                    </h4>
+                </div>
+                <div id="collapse1" class="panel-collapse collapse in">
+                    <div class="panel-body">
+                        <table class="responsive">
+                            <tr>
+                                <td class="labelName"><label class="control-label">Payer EIN:</label></td>
+                                <td class="fieldName">@Html.TextBoxFor(model => model.TaxpayerEIN, new { @class = "form-control", @maxlength = "9" })</td>
+                            </tr>
+                            <tr><td class="spacer10"></td></tr>
+                            <tr>
+                                <td class="labelName"><label class="control-label">TaxYear:</label></td>
+                                <td class="fieldName">@Html.TextBoxFor(model => model.TaxYear, new { @class = "form-control", @maxlength = "4" })</td>
+                            </tr>
+
+                            <tr><td class="spacer10"></td></tr>
+                            <tr>
+                                <td class="labelName"><label class="control-label">VIN 1:</label></td>
+                                <td class="fieldName">
+                                    <input type="text" id="VINs_0" name="VINs[0]" class="form-control" /> <br />
+                                </td>
+                            </tr>
+                            <tr><td class="spacer10"></td></tr>
+                            <tr>
+                                <td class="labelName"><label class="control-label">VIN 2:</label></td>
+                                <td class="fieldName">
+                                    <input type="text" id="VINs_1" name="VINs[1]" class="form-control" /> <br />
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    <div class="spacer10"></div>
+
+    <div class="taC">
+        <button type="button" class="btn btn_lg btn_primary" onclick="GetStatus()" id="btnGetStatus">
+            Get Status
+            <i class="fa fa-spinner fa-spin" aria-hidden="true" id="Spinner" style="display:none"></i>
+        </button>
+    </div>
+    <hr />
+
+    <div class="spacer10"></div>
+
+    <div id="Response" style="display:none">
+        <h2>Response</h2>
+        <pre id="VinResponse"></pre>
+    </div>
+
+</div>
+
+
+<script type="text/javascript">
+
+    $(function () {
+
+
+    });
+
+
+
+    function GetStatus() {
+        var formdata = $("#VINLookupForm").serialize();
+        $("#Spinner").show();
+        $("#btnGetStatus").prop("disabled", true);
+        $.ajax({
+            url: "/home/getvinstatus/",
+            type: "POST",
+            cache: false,
+            data: formdata,
+            success: function (data) {
+                debugger;
+                $('#Response').show();
+                $("#VinResponse").html(data);
+                $("#Spinner").hide();
+                $("#btnGetStatus").prop("disabled", false);
+            },
+            error: function (err) {
+                console.log(err.responseText);
+            }
+        })
+    }
+
+    function Test() {
+
+
+    }
+
+</script>
